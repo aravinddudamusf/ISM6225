@@ -1,6 +1,5 @@
+/* 
 
-﻿/* 
- 
 YOU ARE NOT ALLOWED TO MODIFY ANY FUNCTION DEFINATION's PROVIDED.
 WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
 
@@ -75,12 +74,12 @@ namespace ISM6225_Fall_2023_Assignment_2
             Console.WriteLine();
 
             //Question 8:
-            Console.WriteLine("Question 8:");
-            string longString = "leetcodeisacommunityforcoders";
-            string longStringAfterVowels = RemoveVowels(longString);
-            Console.WriteLine(longStringAfterVowels);
-            Console.WriteLine();
-            Console.WriteLine();
+                Console.WriteLine("Question 8:");
+                string longString = "leetcodeisacommunityforcoders";
+                string longStringAfterVowels = RemoveVowels(longString);
+                Console.WriteLine(longStringAfterVowels);
+                Console.WriteLine();
+                Console.WriteLine();
         }
 
         /*
@@ -113,15 +112,48 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                List<IList<int>> result = new List<IList<int>>();
+
+                // If nums is empty, then the missing range is simply [lower, upper]
+                if (nums.Length == 0)
+                {
+                    if (lower <= upper)
+                        result.Add(new List<int> { lower, upper });
+                    return result;
+                }
+
+                // Process the start boundary
+                if (lower < nums[0] - 1)
+                    result.Add(new List<int> { lower, nums[0] - 1 });
+                else if (lower == nums[0] - 1)
+                    result.Add(new List<int> { lower });
+
+                // Process gaps between consecutive numbers in nums
+                for (int i = 0; i < nums.Length - 1; i++)
+                {
+                    if (nums[i] != nums[i + 1] && nums[i] + 1 != nums[i + 1])
+                    {
+                        if (nums[i] + 1 == nums[i + 1] - 1)
+                            result.Add(new List<int> { nums[i] + 1 });
+                        else
+                            result.Add(new List<int> { nums[i] + 1, nums[i + 1] - 1 });
+                    }
+                }
+
+                // Process the end boundary
+                if (nums[nums.Length - 1] + 1 < upper)
+                    result.Add(new List<int> { nums[nums.Length - 1] + 1, upper });
+                else if (nums[nums.Length - 1] + 1 == upper)
+                    result.Add(new List<int> { upper });
+
+                return result;
             }
             catch (Exception)
             {
                 throw;
             }
-
         }
+
 
         /*
          
@@ -157,7 +189,16 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
+                int prevLength;
+
+                do
+                {
+                    prevLength = s.Length;
+                    s = s.Replace("()", "")
+                         .Replace("[]", "")
+                         .Replace("{}", "");
+                } while (prevLength != s.Length);
+
                 return s.Length == 0;
             }
             catch (Exception)
@@ -165,6 +206,7 @@ namespace ISM6225_Fall_2023_Assignment_2
                 throw;
             }
         }
+
 
         /*
 
@@ -192,14 +234,36 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 1;
+                if (prices == null || prices.Length == 0)
+                    return 0;
+
+                int minPrice = prices[0];
+                int maxProfit = 0;
+
+                for (int i = 1; i < prices.Length; i++)
+                {
+                    // Update the minimum price if a lower price is found
+                    if (prices[i] < minPrice)
+                        minPrice = prices[i];
+                    else
+                    {
+                        // Calculate profit if we were to sell today
+                        int profit = prices[i] - minPrice;
+
+                        // Update the maxProfit if a higher profit is found
+                        if (profit > maxProfit)
+                            maxProfit = profit;
+                    }
+                }
+
+                return maxProfit;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         
@@ -230,14 +294,33 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return false;
+                int n = s.Length;
+
+                for (int i = 0; i <= n / 2; i++)
+                {
+                    char c1 = s[i];
+                    char c2 = s[n - i - 1];
+
+                    // If characters don't form a strobogrammatic pair
+                    if (!(
+                        (c1 == '0' && c2 == '0') ||
+                        (c1 == '1' && c2 == '1') ||
+                        (c1 == '6' && c2 == '9') ||
+                        (c1 == '8' && c2 == '8') ||
+                        (c1 == '9' && c2 == '6')))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
 
@@ -272,14 +355,33 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                Dictionary<int, int> counts = new Dictionary<int, int>();
+
+                // Count the occurrences of each number
+                foreach (int num in nums)
+                {
+                    if (counts.ContainsKey(num))
+                        counts[num]++;
+                    else
+                        counts[num] = 1;
+                }
+
+                int totalPairs = 0;
+
+                // For each number in the dictionary, calculate the number of good pairs
+                foreach (int count in counts.Values)
+                {
+                    totalPairs += (count * (count - 1)) / 2;  // n(n-1)/2
+                }
+
+                return totalPairs;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         Question 6
@@ -322,14 +424,28 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                // Use a HashSet to store distinct numbers
+                HashSet<int> distinctNums = new HashSet<int>(nums);
+
+                // Convert HashSet to a List and sort in descending order
+                List<int> sortedList = distinctNums.ToList();
+                sortedList.Sort((a, b) => b.CompareTo(a));  // Sort in descending order
+
+                // If the list has less than 3 elements, return the first element
+                if (sortedList.Count < 3)
+                {
+                    return sortedList[0];
+                }
+
+                // Otherwise, return the third element
+                return sortedList[2];
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
         
@@ -355,14 +471,26 @@ namespace ISM6225_Fall_2023_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<string>() { };
+                List<string> result = new List<string>();
+
+                // Iterate through the currentState string
+                for (int i = 0; i < currentState.Length - 1; i++)
+                {
+                    // Check for "++" and replace them with "--"
+                    if (currentState[i] == '+' && currentState[i + 1] == '+')
+                    {
+                        result.Add(currentState.Substring(0, i) + "--" + currentState.Substring(i + 2));
+                    }
+                }
+
+                return result;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
 
         /*
 
@@ -384,9 +512,18 @@ namespace ISM6225_Fall_2023_Assignment_2
 
         public static string RemoveVowels(string s)
         {
-            // Write your code here and you can modify the return value according to the requirements
-            return "";
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in s)
+            {
+                if (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u' &&
+                   c != 'A' && c != 'E' && c != 'I' && c != 'O' && c != 'U') // To account for both uppercase and lowercase vowels
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
         }
+
 
         /* Inbuilt Functions - Don't Change the below functions */
         static string ConvertIListToNestedList(IList<IList<int>> input)
